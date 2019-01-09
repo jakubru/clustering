@@ -5,11 +5,11 @@ import matplotlib.pyplot as plt
 def k_means(K, dataset, e):
     idx = np.random.choice(len(dataset), K, False)
     mi = dataset[idx, :]
-    norms = [[np.linalg.norm(vector - cluster_mid) for cluster_mid in mi] for vector in dataset]
-    indicies = [np.argmin(norm) for norm in norms]
-    err = quant_error(dataset,indicies, mi)
+    err = 0
     while True:
         prev_err = err
+        norms = [[np.linalg.norm(vector - cluster_mid) for cluster_mid in mi] for vector in dataset]
+        indicies = [np.argmin(norm) for norm in norms]
         sums = list()
         for cluster_mid in mi:
             cluster_mid = np.zeros(len(dataset[0]))
@@ -21,8 +21,6 @@ def k_means(K, dataset, e):
             i += 1
         for i in range(len(sums)):
             mi[i] /= sums[i]
-        norms = [[np.linalg.norm(vector - cluster_mid) for cluster_mid in mi] for vector in dataset]
-        indicies = [np.argmin(norm) for norm in norms]
         err = quant_error(dataset, indicies, mi)
         if abs((prev_err - err)/err) < e:
             break
