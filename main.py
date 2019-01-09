@@ -1,6 +1,5 @@
 import numpy as np
 import scipy.stats as stats
-import matplotlib.pyplot as plt
 import k_means
 
 gauss1 = stats.multivariate_normal([0, 0], [[20, 0], [0, 20]])
@@ -17,11 +16,5 @@ for _ in range(200):
 dataset = np.array(dataset)
 
 
-
-print(k_means.k_means(5,dataset))
-
-
-fig, ax = plt.subplots(1, 1)
-plt.axis('equal')
-ax.scatter(x=dataset[:,0], y=dataset[:,1])
-plt.show()
+indicies, mi = k_means.fit(3,dataset)
+k_means.visualize(dataset, indicies, mi)
