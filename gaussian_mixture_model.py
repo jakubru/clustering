@@ -1,18 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stats
+import k_means
 
 
 
-def gaussian_mixture_model(dataset, indicies, K):
-    means_k = []
+def gaussian_mixture_model(dataset, mi, indicies, K):
+    means_k = mi
     c_k = []
     sigma_k = []
     clusters = list(zip(dataset, indicies))
     for i in range(K):
         c_k.append(len(list(filter(lambda el: el == i, indicies))))
-    for i in range (K):
-        means_k.append(sum([pair[0] for pair in filter(lambda el: el[1] == i, clusters)])/c_k[i])
     for i in range(K):
         filtered = [pair[0] for pair in filter(lambda el: el[1] == i, list(clusters))]
         cov = 0
@@ -55,7 +54,6 @@ def gaussian_mixture_model(dataset, indicies, K):
         for i in range(K):
             pi_k.append(c_k[i] / len(dataset))
         if check_equal(means_k, old_means, sigma_k, old_sigma, K):
-            print(means_k, old_means, sigma_k, old_sigma)
             break
     return means_k, sigma_k
 
@@ -65,12 +63,17 @@ def visualize(means, covariances):
     X, Y = np.meshgrid(x, y)
     pos = np.dstack((X, Y))
     fig = plt.figure()
-    for i in range(len(means)):
-        rv = stats.multivariate_normal(means[i], covariances[i])
-        Z = rv.pdf(pos)
-        ax = fig.add_subplot(111, projection='3d')
-        ax.plot_surface(X, Y, Z)
+    rv = [stats.multivariate_normal(means[i], covariances[i]) for i in len(means)]
+    Z = rv.pdf(pos)
+    ax = fig.add_subplot(111)
+    ax.contourf(X, Y, Z)
     plt.show()
+
+
+def fit(dataset, K):
+    indicies, mi = k_means.fit(K, dataset)
+    return gaussian_mixture_model(dataset, mi, indicies, K)
+
 
 
 def check_equal(means_1, means_2, sigma_1, sigma_2, K):
@@ -79,5 +82,4 @@ def check_equal(means_1, means_2, sigma_1, sigma_2, K):
             return False
         if not np.array_equal(sigma_1[i], sigma_2[i]):
             return False
-
     return True

@@ -2,8 +2,6 @@ import numpy as np
 import scipy.stats as stats
 import k_means
 import gaussian_mixture_model
-import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
 
 
 
@@ -28,9 +26,11 @@ dataset = np.array(dataset)
 indicies, mi = k_means.fit(4,dataset)
 k_means.visualize(dataset, indicies, mi)
 
-gaussian_mixture_model.gaussian_mixture_model(dataset, indicies, 4)
+means,sigma = gaussian_mixture_model.fit(dataset, 4)
 
 
 
 
-#gaussian_mixture_model.visualize([[12, -12], [-10, 10]], [[[20, 0], [0, 20]], [[5, 0], [0, 5]]])
+
+
+gaussian_mixture_model.visualize(means, sigma)
