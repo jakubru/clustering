@@ -14,23 +14,23 @@ gauss4 = stats.multivariate_normal([-12, -12], [[12, 0], [0, 12]])
 
 
 dataset = []
-for _ in range(400):
+for _ in range(500):
     dataset.append(gauss1.rvs())
-for _ in range(400):
+for _ in range(500):
     dataset.append(gauss2.rvs())
-for _ in range(400):
+for _ in range(300):
     dataset.append(gauss3.rvs())
-for _ in range(400):
+for _ in range(300):
     dataset.append(gauss4.rvs())
 dataset = np.array(dataset)
 
 
 indicies, mi = k_means.fit(4,dataset)
-#k_means.visualize(dataset, indicies, mi)
+k_means.visualize(dataset, indicies, mi)
 
-#gaussian_mixture_model.gaussian_mixture_model(dataset, indicies, 4)
-
-
+gaussian_mixture_model.gaussian_mixture_model(dataset, indicies, 4)
 
 
-gaussian_mixture_model.visualize([[12, -12], [-10, 10]], [[[20, 0], [0, 20]], [[5, 0], [0, 5]]])
+
+
+#gaussian_mixture_model.visualize([[12, -12], [-10, 10]], [[[20, 0], [0, 20]], [[5, 0], [0, 5]]])

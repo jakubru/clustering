@@ -23,9 +23,10 @@ def gaussian_mixture_model(dataset, indicies, K):
     pi_k = []
     for i in range(K):
         pi_k.append(c_k[i]/len(dataset))
-    k = 0
-    while k < 10:
+    while True:
         r_nk = []
+        old_means = means_k
+        old_sigma = sigma_k
         for element in dataset:
             r_nk.append([])
             for i in range(K):
@@ -53,7 +54,9 @@ def gaussian_mixture_model(dataset, indicies, K):
         pi_k = []
         for i in range(K):
             pi_k.append(c_k[i] / len(dataset))
-        k+=1
+        if check_equal(means_k, old_means, sigma_k, old_sigma, K):
+            print(means_k, old_means, sigma_k, old_sigma)
+            break
     return means_k, sigma_k
 
 def visualize(means, covariances):
@@ -68,3 +71,13 @@ def visualize(means, covariances):
         ax = fig.add_subplot(111, projection='3d')
         ax.plot_surface(X, Y, Z)
     plt.show()
+
+
+def check_equal(means_1, means_2, sigma_1, sigma_2, K):
+    for i in range(K):
+        if not np.array_equal(means_1[i],  means_2[i]):
+            return False
+        if not np.array_equal(sigma_1[i], sigma_2[i]):
+            return False
+
+    return True
