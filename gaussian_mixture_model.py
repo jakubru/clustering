@@ -1,25 +1,70 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.stats as stats
 
 
-def gaussian_mixture_model(dataset, indicies, mi, K):
+
+def gaussian_mixture_model(dataset, indicies, K):
     means_k = []
     c_k = []
     sigma_k = []
-    clusters = zip(dataset, indicies)
+    clusters = list(zip(dataset, indicies))
     for i in range(K):
         c_k.append(len(list(filter(lambda el: el == i, indicies))))
     for i in range (K):
         means_k.append(sum([pair[0] for pair in filter(lambda el: el[1] == i, clusters)])/c_k[i])
     for i in range(K):
-        filtered = [pair[0] for pair in filter(lambda el: el[1] == i, clusters)]
+        filtered = [pair[0] for pair in filter(lambda el: el[1] == i, list(clusters))]
         cov = 0
-        print(filtered)
         for element in filtered:
-            cov += (element - means_k[i])*(element - means_k[i]).tanspose()
-            print(cov)
-        cov = cov/c_k[i]
-        sigma_k.append(cov)
-    print(sigma_k)
+            x = np.matrix(element- means_k[i])
+            cov += np.dot(x.transpose(),x)
+        sigma_k.append(cov/c_k[i])
+    pi_k = []
+    for i in range(K):
+        pi_k.append(c_k[i]/len(dataset))
+    k = 0
+    while k < 10:
+        r_nk = []
+        for element in dataset:
+            r_nk.append([])
+            for i in range(K):
+                r_nk[len(r_nk) - 1].append(pi_k[i]*stats.multivariate_normal(means_k[i], sigma_k[i]).pdf(element))
+            sum_ = sum(r_nk[len(r_nk) - 1])
+            for i in range(K):
+                r_nk[len(r_nk) - 1][i] /= sum_
+        for i in range(len(r_nk)):
+            r_nk[i] = np.argmax(r_nk[i])
+        means_k = []
+        c_k = []
+        sigma_k = []
+        clusters = list(zip(dataset, r_nk))
+        for i in range(K):
+            c_k.append(len(list(filter(lambda el: el == i, r_nk))))
+        for i in range(K):
+            means_k.append(sum([pair[0] for pair in filter(lambda el: el[1] == i, clusters)]) / c_k[i])
+        for i in range(K):
+            filtered = [pair[0] for pair in filter(lambda el: el[1] == i, list(clusters))]
+            cov = 0
+            for element in filtered:
+                x = np.matrix(element - means_k[i])
+                cov += np.dot(x.transpose(), x)
+            sigma_k.append(cov / c_k[i])
+        pi_k = []
+        for i in range(K):
+            pi_k.append(c_k[i] / len(dataset))
+        k+=1
+    return means_k, sigma_k
 
-
+def visualize(means, covariances):
+    x = np.linspace(-50, 50, 100)
+    y = np.linspace(-50, 50, 100)
+    X, Y = np.meshgrid(x, y)
+    pos = np.dstack((X, Y))
+    fig = plt.figure()
+    for i in range(len(means)):
+        rv = stats.multivariate_normal(means[i], covariances[i])
+        Z = rv.pdf(pos)
+        ax = fig.add_subplot(111, projection='3d')
+        ax.plot_surface(X, Y, Z)
+    plt.show()
