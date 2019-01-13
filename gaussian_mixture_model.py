@@ -58,8 +58,8 @@ def gaussian_mixture_model(dataset, mi, indicies, K):
     return means_k, sigma_k
 
 def visualize(means, covariances):
-    x = np.linspace(-50, 50, 100)
-    y = np.linspace(-50, 50, 100)
+    x = np.linspace(-20, 20, 100)
+    y = np.linspace(-20, 20, 100)
     X, Y = np.meshgrid(x, y)
     pos = np.dstack((X, Y))
     Z = np.array([np.zeros(100) for _ in range (100)])
@@ -77,8 +77,7 @@ def visualize(means, covariances):
 
 
 
-def fit(dataset, K):
-    indicies, mi = k_means.fit(K, dataset)
+def fit(dataset, K, mi, indicies):
     return gaussian_mixture_model(dataset, mi, indicies, K)
 
 
