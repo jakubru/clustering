@@ -23,8 +23,8 @@ for _ in range(300):
 dataset = np.array(dataset)
 
 
-indicies, mi = k_means.fit(4,dataset)
-k_means.visualize(dataset, indicies, mi)
+#indicies, mi = k_means.fit(4,dataset)
+#k_means.visualize(dataset, indicies, mi)
 
 means,sigma = gaussian_mixture_model.fit(dataset, 4)
 

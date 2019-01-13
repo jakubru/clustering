@@ -62,12 +62,19 @@ def visualize(means, covariances):
     y = np.linspace(-50, 50, 100)
     X, Y = np.meshgrid(x, y)
     pos = np.dstack((X, Y))
+    Z = np.array([np.zeros(100) for _ in range (100)])
+    for i in range(len(means)):
+        rv = stats.multivariate_normal(means[i], covariances[i])
+        Z_tmp = rv.pdf(pos)
+        for j in range(len(Z)):
+            Z[j] = np.maximum(Z[j], Z_tmp[j])
     fig = plt.figure()
-    rv = [stats.multivariate_normal(means[i], covariances[i]) for i in len(means)]
-    Z = rv.pdf(pos)
     ax = fig.add_subplot(111)
     ax.contourf(X, Y, Z)
     plt.show()
+
+
+
 
 
 def fit(dataset, K):
